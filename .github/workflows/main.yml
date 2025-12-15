@@ -1,33 +1,40 @@
-name: POS System CI
+name: POS System CI (Debug)
 
 on:
   push:
-    branches:
-      - development
+    branches: [development]
   pull_request:
-    branches:
-      - development
+    branches: [development]
 
 jobs:
-  phpunit-tests:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Step 2: Set up PHP 8.2 with required extensions
       - name: Set up PHP
-        uses: shivammathur/setup-php@v3
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, mysqli, pdo, pdo_mysql
+          coverage: none
 
-      # Step 3: Install Composer dependencies
-      - name: Install Composer dependencies
-        run: composer install --no-progress --no-interaction --prefer-dist
+      - name: Show PHP version
+        run: php -v
 
-      # Step 4: Run PHPUnit tests via Composer
-      - name: Run PHPUnit tests
-        run: composer exec phpunit -- --colors=always
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: Show vendor/bin contents
+        run: ls -la vendor/bin
+
+      - name: Show tests directory
+        run: ls -la tests
+
+      - name: Run PHPUnit (DEBUG)
+        run: vendor/bin/phpunit --configuration phpunit.xml --debug --colors=always
