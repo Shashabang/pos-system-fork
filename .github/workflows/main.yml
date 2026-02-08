@@ -2,9 +2,9 @@ name: POS System CI (Debug)
 
 on:
   push:
-    branches: [development]
+    branches: [ "testing", "development" ]
   pull_request:
-    branches: [development]
+    branches: [ "development", "main" ]
 
 jobs:
   tests:
